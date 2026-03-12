@@ -1,14 +1,29 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const profileBtn = document.querySelector(".profile-btn");
+  const profileBtn = document.querySelector(".nav-profile-btn");
   const menu = document.querySelector(".profile-menu");
 
-  profileBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    menu.classList.toggle("hidden");
+  if (!profileBtn || !menu) {
+    return;
+  }
+
+  profileBtn.addEventListener("click", (event) => {
+    event.stopPropagation();
+
+    const isOpen = menu.style.display === "flex";
+    menu.style.display = isOpen ? "none" : "flex";
   });
 
-  // Close dropdown when clicked outside
+  menu.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+
   document.addEventListener("click", () => {
-    menu.classList.add("hidden");
+    menu.style.display = "none";
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      menu.style.display = "none";
+    }
   });
 });

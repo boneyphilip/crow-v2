@@ -1,9 +1,52 @@
-<h1>Edit Comment</h1>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Edit Comment</title>
 
-<form method="POST">
-  {% csrf_token %}
-  <textarea name="content">{{ comment.content }}</textarea>
+    <link rel="stylesheet" href="{% static 'posts/css/navbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'posts/css/edit_delete.css' %}" />
 
-  <button type="submit">Save</button>
-  <a href="{% url 'post_detail' comment.post.id %}">Cancel</a>
-</form>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    {% include 'posts/navbar.html' %}
+
+    <div class="edit-container">
+      <h1>Edit Comment</h1>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="flash-message">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="POST" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <div class="form-group">
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+
+        <div class="form-group">
+          <label for="{{ form.content.id_for_label }}">{{ form.content.label }}</label>
+          {{ form.content }}
+          {% if form.content.errors %}
+            <div class="form-error">{{ form.content.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="button-row">
+          <button class="btn-primary" type="submit">Save Changes</button>
+          <a href="{% url 'post_detail' comment.post.id %}" class="btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

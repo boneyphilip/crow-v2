@@ -1,55 +1,81 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const bar = document.getElementById("searchBar");
-  const box = document.getElementById("searchResults");
+  const searchBar = document.getElementById("searchBar");
+  const resultsBox = document.getElementById("searchResults");
+  const searchBox = document.querySelector(".search-box");
 
-  if (!bar) return;
+  if (!searchBar || !resultsBox || !searchBox) {
+    return;
+  }
 
-  bar.addEventListener("input", () => {
-    const q = bar.value.trim();
+  const hideResults = () => {
+    resultsBox.innerHTML = "";
+    resultsBox.style.display = "none";
+  };
 
-    if (!q) {
-      box.innerHTML = "";
-      box.style.display = "none";
+  searchBar.addEventListener("input", async () => {
+    const query = searchBar.value.trim();
+
+    if (!query) {
+      hideResults();
       return;
     }
 
-    fetch(`/search/ajax/?q=${encodeURIComponent(q)}`)
-      .then((r) => r.json())
-      .then((data) => {
-        const results = data.results;
+    try {
+      const response = await fetch(
+        `/search/ajax/?q=${encodeURIComponent(query)}`
+      );
 
-        if (!results.length) {
-          box.innerHTML = "<div class='sr-empty'>No results</div>";
-          box.style.display = "block";
-          return;
-        }
+      if (!response.ok) {
+        hideResults();
+        return;
+      }
 
-        box.innerHTML = results
-          .map(
-            (item) => `
-                    <div class="sr-item" onclick="location.href='/post/${
-                      item.id
-                    }/'">
-                        <img src="${
-                          item.thumb || "/static/posts/images/noimg.png"
-                        }">
-                        <div>
-                            <div class="sr-title">${item.title}</div>
-                            <div class="sr-author">@${item.author}</div>
-                        </div>
-                    </div>
-                `
-          )
-          .join("");
+      const data = await response.json();
+      const results = data.results || [];
 
-        box.style.display = "block";
-      });
+      if (!results.length) {
+        resultsBox.innerHTML = `
+          <div class="search-item">No results found</div>
+        `;
+        resultsBox.style.display = "block";
+        return;
+      }
+
+      resultsBox.innerHTML = results
+        .map((item) => {
+          return `
+            <div class="search-item" data-url="/post/${item.id}/">
+              <strong>${item.title}</strong><br>
+              <small>@${item.author}</small>
+            </div>
+          `;
+        })
+        .join("");
+
+      resultsBox.style.display = "block";
+    } catch (error) {
+      hideResults();
+    }
   });
 
-  // hide dropdown when clicking outside
-  document.addEventListener("click", (e) => {
-    if (!e.target.closest(".search-wrapper")) {
-      box.style.display = "none";
+  resultsBox.addEventListener("click", (event) => {
+    const item = event.target.closest(".search-item");
+    if (!item || !item.dataset.url) {
+      return;
+    }
+
+    window.location.href = item.dataset.url;
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest(".search-box")) {
+      resultsBox.style.display = "none";
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      resultsBox.style.display = "none";
     }
   });
 });
