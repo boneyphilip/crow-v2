@@ -46,23 +46,27 @@
         ====================================================== -->
         {% if post.media.count == 1 %} {% with m=post.media.first %}
         <div class="media-single">
-          {% if m.is_image %}
-          <img src="{{ m.file.url }}" class="media-single-img" />
+          {% if m.is_document %}
+          <a
+            href="{{ m.file.url }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="doc-preview-card"
+          >
+            <div class="doc-icon">📄</div>
+            <div class="doc-info">
+              <span class="doc-name">{{ m.display_name|truncatechars:32 }}</span>
+              <span class="doc-meta">Click to view / download</span>
+            </div>
+          </a>
 
           {% elif m.is_video %}
           <video controls class="media-single-video">
             <source src="{{ m.file.url }}" type="video/mp4" />
           </video>
 
-          {% else %}
-          <!-- SINGLE DOC PREVIEW -->
-          <a href="{{ m.file.url }}" target="_blank" class="doc-preview-card">
-            <div class="doc-icon">📄</div>
-            <div class="doc-info">
-              <span class="doc-name">{{ m.file.name|truncatechars:32 }}</span>
-              <span class="doc-meta">Click to view / download</span>
-            </div>
-          </a>
+          {% elif m.is_image %}
+          <img src="{{ m.file.url }}" class="media-single-img" alt="Post image" />
           {% endif %}
         </div>
         {% endwith %} {% elif post.media.count > 1 %}
@@ -72,22 +76,26 @@
           <div class="gallery-track">
             {% for media in post.media.all %}
             <div class="gallery-item">
-              {% if media.is_image %}
-              <img src="{{ media.file.url }}" />
+              {% if media.is_document %}
+              <a
+                href="{{ media.file.url }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="doc-slide"
+              >
+                <div class="doc-big-icon">📄</div>
+                <div class="doc-name">
+                  {{ media.display_name|truncatechars:24 }}
+                </div>
+              </a>
 
               {% elif media.is_video %}
               <video controls muted>
                 <source src="{{ media.file.url }}" type="video/mp4" />
               </video>
 
-              {% else %}
-              <!-- DOC INSIDE SLIDER -->
-              <a href="{{ media.file.url }}" target="_blank" class="doc-slide">
-                <div class="doc-big-icon">📄</div>
-                <div class="doc-name">
-                  {{ media.file.name|truncatechars:24 }}
-                </div>
-              </a>
+              {% elif media.is_image %}
+              <img src="{{ media.file.url }}" alt="Post media" />
               {% endif %}
             </div>
             {% endfor %}

@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Crow — Home Feed</title>
+    <title>Crow - Home Feed</title>
 
     <!-- STYLES -->
     <link rel="stylesheet" href="{% static 'posts/css/navbar.css' %}" />
@@ -42,7 +42,7 @@
           <div class="post-meta">
             <span class="post-author">{{ post.author.username }}</span>
             <span class="post-time">
-              • {{ post.created_at|naturaltime|clean_time }}
+              &bull; {{ post.created_at|naturaltime|clean_time }}
             </span>
 
             {% if post.category %}
@@ -65,14 +65,23 @@
         <!-- ===== SINGLE MEDIA ===== -->
         {% if media_list|length == 1 %} {% with m=media_list.0 %}
         <div class="media-single">
-          {% if m.file.resource_type == "image" %}
-          <img
-            src="{{ m.file.url }}"
-            class="media-single-img js-media"
-            alt="Post image"
-          />
+          {% if m.is_document %}
+          <a
+            href="{{ m.file.url }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="doc-attachment"
+          >
+            <div class="doc-file-icon">&#128196;</div>
+            <div class="doc-file-info">
+              <div class="doc-file-name">
+                {{ m.display_name|truncatechars:45 }}
+              </div>
+              <div class="doc-file-meta">Click to open / download</div>
+            </div>
+          </a>
 
-          {% elif m.file.resource_type == "video" %}
+          {% elif m.is_video %}
           <video
             class="media-single-video js-media"
             controls
@@ -81,20 +90,12 @@
             <source src="{{ m.file.url }}" />
           </video>
 
-          {% else %}
-          <div
-            class="doc-attachment"
-            data-src="{{ m.file.url }}"
-            data-name="{{ m.file.public_id }}"
-          >
-            <div class="doc-file-icon">📄</div>
-            <div class="doc-file-info">
-              <div class="doc-file-name">
-                {{ m.file.public_id|truncatechars:45 }}
-              </div>
-              <div class="doc-file-meta">Click to open / download</div>
-            </div>
-          </div>
+          {% elif m.is_image %}
+          <img
+            src="{{ m.file.url }}"
+            class="media-single-img js-media"
+            alt="Post image"
+          />
           {% endif %}
         </div>
         {% endwith %}
@@ -105,37 +106,38 @@
           <div class="gallery-track">
             {% for media in media_list %}
             <div class="gallery-item">
-              {% if media.file.resource_type == "image" %}
+              {% if media.is_document %}
+              <a
+                href="{{ media.file.url }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="doc-slide"
+              >
+                <div class="doc-big-icon">&#128196;</div>
+                <div class="doc-name">
+                  {{ media.display_name|truncatechars:26 }}
+                </div>
+                Open / Download
+              </a>
+
+              {% elif media.is_video %}
+              <video controls muted class="js-media">
+                <source src="{{ media.file.url }}" />
+              </video>
+
+              {% elif media.is_image %}
               <img
                 src="{{ media.file.url }}"
                 class="js-media"
                 alt="Gallery image"
               />
-
-              {% elif media.file.resource_type == "video" %}
-              <video controls muted class="js-media">
-                <source src="{{ media.file.url }}" />
-              </video>
-
-              {% else %}
-              <div
-                class="doc-slide"
-                data-src="{{ media.file.url }}"
-                data-name="{{ media.file.public_id }}"
-              >
-                <div class="doc-big-icon">📄</div>
-                <div class="doc-name">
-                  {{ media.file.public_id|truncatechars:26 }}
-                </div>
-                Open / Download
-              </div>
               {% endif %}
             </div>
             {% endfor %}
           </div>
 
-          <button class="gallery-prev">‹</button>
-          <button class="gallery-next">›</button>
+          <button class="gallery-prev">&lsaquo;</button>
+          <button class="gallery-next">&rsaquo;</button>
 
           <div class="gallery-dots">
             {% for media in media_list %}
@@ -165,10 +167,10 @@
               data-post-id="{{ post.id }}"
               data-action="upvote"
             >
-              ▲
+              &#9650;
             </button>
             {% else %}
-            <span class="disabled-vote">▲</span>
+            <span class="disabled-vote">&#9650;</span>
             {% endif %}
 
             <span class="vote-count" id="vote-count-{{ post.id }}">
@@ -181,20 +183,20 @@
               data-post-id="{{ post.id }}"
               data-action="downvote"
             >
-              ▼
+              &#9660;
             </button>
             {% else %}
-            <span class="disabled-vote">▼</span>
+            <span class="disabled-vote">&#9660;</span>
             {% endif %}
           </div>
 
           <!-- COMMENTS -->
           <a href="{% url 'post_detail' post.id %}" class="action-btn">
-            💬 {{ post.comments.count }} Comments
+            &#128172; {{ post.comments.count }} Comments
           </a>
 
           <!-- SHARE -->
-          <div class="action-btn share-btn">↗ Share</div>
+          <div class="action-btn share-btn">&#8599; Share</div>
         </div>
       </div>
       {% empty %}
@@ -206,10 +208,10 @@
        LIGHTBOX (IMAGE / VIDEO / DOCUMENT)
   ================================================== -->
     <div id="lightbox" class="lightbox hidden">
-      <span id="lightbox-close" class="lightbox-close">×</span>
+      <span id="lightbox-close" class="lightbox-close">&times;</span>
 
-      <button id="lightbox-prev" class="lightbox-nav">‹</button>
-      <button id="lightbox-next" class="lightbox-nav">›</button>
+      <button id="lightbox-prev" class="lightbox-nav">&lsaquo;</button>
+      <button id="lightbox-next" class="lightbox-nav">&rsaquo;</button>
 
       <div class="lightbox-content">
         <!-- IMAGE -->
@@ -221,7 +223,7 @@
         <!-- DOCUMENT -->
         <div id="lightbox-doc" class="doc-lightbox-box hidden">
           <div class="doc-preview">
-            <div class="doc-big-icon">📄</div>
+            <div class="doc-big-icon">&#128196;</div>
             <div id="doc-name" class="doc-title"></div>
             <a
               id="doc-download"
@@ -236,6 +238,21 @@
         </div>
       </div>
     </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".flash-message").forEach((message) => {
+          setTimeout(() => {
+            message.style.transition = "opacity 0.35s ease";
+            message.style.opacity = "0";
+
+            setTimeout(() => {
+              message.remove();
+            }, 350);
+          }, 3000);
+        });
+      });
+    </script>
 
     <!-- SCRIPT -->
     <script src="{% static 'posts/js/home.js' %}"></script>

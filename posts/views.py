@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from cloudinary.exceptions import BadRequest
 
 from .forms import CommentForm, PostForm
 from .models import Category, Comment, Post, PostMedia, Vote
@@ -82,7 +83,9 @@ def create_post(request):
 
         category = None
         if category_name:
-            category, _ = Category.objects.get_or_create(name=category_name)
+            category, _ = Category.objects.get_or_create(
+                name=category_name
+            )
 
         post = Post.objects.create(
             title=title,
@@ -91,17 +94,29 @@ def create_post(request):
             category=category,
         )
 
-        for image_file in request.FILES.getlist("images"):
-            PostMedia.objects.create(post=post, file=image_file)
+        try:
+            for image_file in request.FILES.getlist("images"):
+                if image_file and getattr(image_file, "size", 0) > 0:
+                    PostMedia.objects.create(post=post, file=image_file)
 
-        if request.FILES.get("video"):
-            PostMedia.objects.create(post=post, file=request.FILES["video"])
+            video_file = request.FILES.get("video")
+            if video_file and getattr(video_file, "size", 0) > 0:
+                PostMedia.objects.create(post=post, file=video_file)
 
-        for source_file in request.FILES.getlist("sources"):
-            PostMedia.objects.create(post=post, file=source_file)
+            for source_file in request.FILES.getlist("sources"):
+                if source_file and getattr(source_file, "size", 0) > 0:
+                    PostMedia.objects.create(post=post, file=source_file)
 
-        messages.success(request, "Post created successfully!")
-        return redirect("home")
+        except BadRequest:
+            post.delete()
+            messages.error(
+                request,
+                "One of the uploaded files was empty or invalid. Please try again.",
+            )
+            return redirect("create_post")
+
+        messages.success(request, "Post created successfully.")
+        return redirect("create_post")
 
     return render(request, "posts/create_post.html")
 

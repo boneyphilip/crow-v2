@@ -151,14 +151,73 @@ class PostMedia(models.Model):
 
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
+    def file_extension(self) -> str:
+        """Return the lowercase file extension when available."""
+        file_format = getattr(self.file, "format", "")
+        if file_format:
+            return str(file_format).lower()
+
+        public_id = getattr(self.file, "public_id", "")
+        filename = str(public_id).rsplit("/", 1)[-1]
+
+        if "." in filename:
+            return filename.rsplit(".", 1)[-1].lower()
+
+        return ""
+
+    def display_name(self) -> str:
+        """Return a readable filename for templates."""
+        public_id = getattr(self.file, "public_id", "")
+        name = str(public_id).rsplit("/", 1)[-1] or "attachment"
+        ext = self.file_extension()
+
+        if ext and not name.lower().endswith(f".{ext}"):
+            name = f"{name}.{ext}"
+
+        return name
+
     def is_image(self) -> bool:
-        return self.file and self.file.resource_type == "image"
+        """Return True only for real image files."""
+        if not self.file:
+            return False
+
+        ext = self.file_extension()
+        document_exts = {"pdf", "txt", "doc", "docx", "rtf", "odt"}
+
+        if ext in document_exts:
+            return False
+
+        image_exts = {
+            "jpg", "jpeg", "png", "gif", "webp", "bmp", "svg", "avif"
+        }
+        return (
+            getattr(self.file, "resource_type", "") == "image"
+            or ext in image_exts
+        )
 
     def is_video(self) -> bool:
-        return self.file and self.file.resource_type == "video"
+        """Return True for video files."""
+        if not self.file:
+            return False
+
+        ext = self.file_extension()
+        video_exts = {"mp4", "mov", "webm", "avi", "mkv"}
+        return (
+            getattr(self.file, "resource_type", "") == "video"
+            or ext in video_exts
+        )
 
     def is_document(self) -> bool:
-        return self.file and self.file.resource_type == "raw"
+        """Return True for document-like files including PDF."""
+        if not self.file:
+            return False
+
+        ext = self.file_extension()
+        document_exts = {"pdf", "txt", "doc", "docx", "rtf", "odt"}
+        return (
+            ext in document_exts
+            or getattr(self.file, "resource_type", "") == "raw"
+        )
 
     def __str__(self) -> str:
-        return str(self.file)
+        return self.display_name()

@@ -124,6 +124,16 @@
       </div>
     </div>
     <!-- Toast Notification -->
+    {% if messages %}
+    <script>
+      window.createPostMessages = [
+        {% for message in messages %}
+          "{{ message|escapejs }}",
+        {% endfor %}
+      ];
+    </script>
+    {% endif %}
+
     <div id="toast" class="toast"></div>
 
     <script src="{% static 'posts/js/create_post.js' %}"></script>

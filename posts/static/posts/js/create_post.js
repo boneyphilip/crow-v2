@@ -31,12 +31,14 @@ summaryBox.addEventListener("input", () => {
 ============================================================ */
 function showToast(msg) {
   const t = document.getElementById("toast");
+  if (!t) return;
+
   t.textContent = msg;
   t.classList.add("show");
 
   setTimeout(() => {
     t.classList.remove("show");
-  }, 1800);
+  }, 2800);
 }
 
 /* ============================================================
@@ -242,5 +244,19 @@ input.addEventListener("input", async function () {
       bubbleBox.innerHTML = "";
     };
     bubbleBox.appendChild(create);
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (
+    window.createPostMessages &&
+    Array.isArray(window.createPostMessages) &&
+    window.createPostMessages.length
+  ) {
+    window.createPostMessages.forEach((message, index) => {
+      setTimeout(() => {
+        showToast(message);
+      }, index * 3000);
+    });
   }
 });
