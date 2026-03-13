@@ -286,6 +286,18 @@
       </div>
     </div>
 
+    {% if messages %}
+    <script>
+      window.postDetailMessages = [
+        {% for message in messages %}
+          "{{ message|escapejs }}",
+        {% endfor %}
+      ];
+    </script>
+    {% endif %}
+
+    <div id="toast" class="toast"></div>
+
     <script src="{% static 'posts/js/post_detail.js' %}"></script>
   </body>
 </html>

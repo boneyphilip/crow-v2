@@ -229,3 +229,29 @@ document.body.addEventListener("click", async (e) => {
     console.warn("Share failed:", err);
   }
 });
+
+function showToast(msg) {
+  const toast = document.getElementById("toast");
+  if (!toast) return;
+
+  toast.textContent = msg;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2800);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (
+    window.postDetailMessages &&
+    Array.isArray(window.postDetailMessages) &&
+    window.postDetailMessages.length
+  ) {
+    window.postDetailMessages.forEach((message, index) => {
+      setTimeout(() => {
+        showToast(message);
+      }, index * 3000);
+    });
+  }
+});

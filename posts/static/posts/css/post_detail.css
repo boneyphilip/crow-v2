@@ -541,3 +541,26 @@ body {
 .lightbox-nav:hover {
   background: rgba(255, 255, 255, 0.6);
 }
+
+/* ---------------------------------------------------------
+   TOAST NOTIFICATION
+--------------------------------------------------------- */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 99999;
+}
+
+.toast.show {
+  opacity: 1;
+}

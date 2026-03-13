@@ -1,6 +1,9 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Sum
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
+from cloudinary import uploader
 from cloudinary.models import CloudinaryField
 
 
@@ -150,6 +153,7 @@ class PostMedia(models.Model):
     )
 
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    original_name = models.CharField(max_length=255, blank=True, default="")
 
     def file_extension(self) -> str:
         """Return the lowercase file extension when available."""
@@ -167,6 +171,13 @@ class PostMedia(models.Model):
 
     def display_name(self) -> str:
         """Return a readable filename for templates."""
+        if self.original_name:
+            return str(self.original_name)
+
+        cloudinary_name = getattr(self.file, "original_filename", "")
+        if cloudinary_name:
+            return str(cloudinary_name)
+
         public_id = getattr(self.file, "public_id", "")
         name = str(public_id).rsplit("/", 1)[-1] or "attachment"
         ext = self.file_extension()
@@ -219,5 +230,32 @@ class PostMedia(models.Model):
             or getattr(self.file, "resource_type", "") == "raw"
         )
 
+    def delete_from_cloudinary(self) -> None:
+        """Delete the underlying Cloudinary asset if it exists."""
+        if not self.file:
+            return
+
+        public_id = getattr(self.file, "public_id", None)
+        resource_type = getattr(self.file, "resource_type", None) or "image"
+
+        if not public_id:
+            return
+
+        try:
+            uploader.destroy(
+                public_id,
+                resource_type=resource_type,
+                invalidate=True,
+            )
+        except Exception:
+            # Avoid breaking post/comment deletion if Cloudinary cleanup fails.
+            pass
+
     def __str__(self) -> str:
         return self.display_name()
+
+
+@receiver(pre_delete, sender=PostMedia)
+def delete_postmedia_file_from_cloudinary(sender, instance, **kwargs):
+    """Ensure Cloudinary asset is removed when PostMedia is deleted."""
+    instance.delete_from_cloudinary()

@@ -209,8 +209,24 @@ document.addEventListener("DOMContentLoaded", () => {
      - Scoped to the clicked post only
   ========================================================== */
   document.addEventListener("click", (e) => {
+    // Let document links behave like normal links
+    const docEl = e.target.closest(
+      ".doc-attachment, .doc-slide, .doc-preview-card"
+    );
+
+    if (docEl) {
+      const fileUrl = docEl.getAttribute("href");
+
+      if (!fileUrl) {
+        e.preventDefault();
+        console.warn("Document link is missing href.");
+      }
+
+      return;
+    }
+
     const mediaEl = e.target.closest(
-      ".js-media, .media-single-video, .doc-attachment, .doc-slide"
+      ".js-media, .media-single-video, .gallery-item img, .gallery-item video"
     );
 
     if (!mediaEl) return;
@@ -222,23 +238,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!postCard) return;
 
     const elements = postCard.querySelectorAll(
-      ".media-single-img, .media-single-video, .doc-attachment, .gallery-item img, .gallery-item video, .doc-slide"
+      ".media-single-img, .media-single-video, .gallery-item img, .gallery-item video"
     );
 
     mediaList = Array.from(elements).map((el) => {
       if (el.tagName === "IMG") {
-        return { type: "image", src: el.src };
-      }
-      if (el.tagName === "VIDEO") {
         return {
-          type: "video",
-          src: el.querySelector("source").src,
+          type: "image",
+          src: el.src,
         };
       }
+
       return {
-        type: "doc",
-        src: el.dataset.src,
-        name: el.dataset.name,
+        type: "video",
+        src: el.querySelector("source")?.src || el.currentSrc || "",
       };
     });
 

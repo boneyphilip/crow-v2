@@ -97,15 +97,27 @@ def create_post(request):
         try:
             for image_file in request.FILES.getlist("images"):
                 if image_file and getattr(image_file, "size", 0) > 0:
-                    PostMedia.objects.create(post=post, file=image_file)
+                    PostMedia.objects.create(
+                        post=post,
+                        file=image_file,
+                        original_name=image_file.name,
+                    )
 
             video_file = request.FILES.get("video")
             if video_file and getattr(video_file, "size", 0) > 0:
-                PostMedia.objects.create(post=post, file=video_file)
+                PostMedia.objects.create(
+                    post=post,
+                    file=video_file,
+                    original_name=video_file.name,
+                )
 
             for source_file in request.FILES.getlist("sources"):
                 if source_file and getattr(source_file, "size", 0) > 0:
-                    PostMedia.objects.create(post=post, file=source_file)
+                    PostMedia.objects.create(
+                        post=post,
+                        file=source_file,
+                        original_name=source_file.name,
+                    )
 
         except BadRequest:
             post.delete()
