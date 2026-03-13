@@ -1,8 +1,6 @@
 # Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
 *.log
 
 # Django
@@ -13,12 +11,16 @@ staticfiles/
 # Environment
 .env
 
-# Virtual environment
+# Virtual environments
 venv/
+.venv/
 
 # VS Code
 .vscode/
 
-# macOS and Windows system files
+# OS files
 .DS_Store
 Thumbs.db
+
+# Local helper files
+tree.txt
