@@ -111,7 +111,10 @@ def create_post(request):
             post.delete()
             messages.error(
                 request,
-                "One of the uploaded files was empty or invalid. Please try again.",
+                (
+                    "One of the uploaded files was empty or invalid. "
+                    "Please try again."
+                ),
             )
             return redirect("create_post")
 
