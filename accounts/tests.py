@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 
@@ -13,6 +12,8 @@ class AccountViewsTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_user_can_register(self):
+        from django.contrib.auth.models import User
+
         response = self.client.post(
             reverse("register"),
             {
@@ -25,6 +26,8 @@ class AccountViewsTests(TestCase):
         self.assertTrue(User.objects.filter(username="newuser").exists())
 
     def test_user_can_log_in(self):
+        from django.contrib.auth.models import User
+
         User.objects.create_user(
             username="testuser",
             password="StrongPass123!",

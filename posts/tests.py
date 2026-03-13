@@ -1,14 +1,14 @@
 import json
 
-from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
-
-from .models import Comment, Post, Vote
 
 
 class PostViewsTests(TestCase):
     def setUp(self):
+        from django.contrib.auth.models import User
+        from .models import Post
+
         self.author = User.objects.create_user(
             username="author",
             password="StrongPass123!",
@@ -33,6 +33,8 @@ class PostViewsTests(TestCase):
         self.assertIn(reverse("login"), response.url)
 
     def test_authenticated_user_can_create_post(self):
+        from .models import Post
+
         self.client.login(username="author", password="StrongPass123!")
 
         response = self.client.post(
@@ -69,6 +71,8 @@ class PostViewsTests(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_author_can_delete_own_post(self):
+        from .models import Post
+
         self.client.login(username="author", password="StrongPass123!")
 
         response = self.client.post(reverse("delete_post", args=[self.post.id]))
@@ -77,6 +81,8 @@ class PostViewsTests(TestCase):
         self.assertFalse(Post.objects.filter(id=self.post.id).exists())
 
     def test_authenticated_user_can_add_comment(self):
+        from .models import Comment
+
         self.client.login(username="author", password="StrongPass123!")
 
         response = self.client.post(
@@ -93,6 +99,8 @@ class PostViewsTests(TestCase):
         )
 
     def test_user_can_vote_on_post(self):
+        from .models import Vote
+
         self.client.login(username="author", password="StrongPass123!")
 
         response = self.client.post(

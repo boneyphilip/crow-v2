@@ -8,15 +8,15 @@ Deployment-ready settings:
 - Local SQLite + Railway/Postgres support
 """
 
-from pathlib import Path
 import os
-
-import dj_database_url
-from dotenv import load_dotenv
+import sys
+from pathlib import Path
 
 import cloudinary
-import cloudinary.uploader
 import cloudinary.api
+import cloudinary.uploader
+import dj_database_url
+from dotenv import load_dotenv
 
 # ==========================================================
 # LOAD ENVIRONMENT VARIABLES
@@ -31,6 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-only-change-me")
 
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
+TESTING = "test" in sys.argv
 
 allowed_hosts_raw = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost")
 ALLOWED_HOSTS = [h.strip() for h in allowed_hosts_raw.split(",") if h.strip()]
@@ -51,12 +52,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
-
-    # Cloudinary
     "cloudinary",
     "cloudinary_storage",
-
-    # Local apps
     "posts",
     "accounts",
 ]
@@ -103,7 +100,6 @@ WSGI_APPLICATION = "crow.wsgi.application"
 DATABASE_URL = os.getenv("DATABASE_URL", "")
 
 if DATABASE_URL:
-    # Railway / Production (PostgreSQL)
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
@@ -112,7 +108,6 @@ if DATABASE_URL:
         )
     }
 else:
-    # Local development (SQLite)
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -159,22 +154,29 @@ USE_I18N = True
 USE_TZ = True
 
 # ==========================================================
-# STATIC FILES (WHITENOISE)
+# STATIC FILES
 # ==========================================================
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-STORAGES = {
-    # Media files → Cloudinary
-    "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-    },
-
-    # Static files → WhiteNoise
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+if DEBUG or TESTING:
+    STORAGES = {
+        "default": {
+            "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
+else:
+    STORAGES = {
+        "default": {
+            "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
 
 # ==========================================================
 # DEFAULT PRIMARY KEY
@@ -189,7 +191,7 @@ LOGOUT_REDIRECT_URL = "home"
 LOGIN_URL = "login"
 
 # ==========================================================
-# CLOUDINARY CONFIGURATION (CRITICAL)
+# CLOUDINARY CONFIGURATION
 # ==========================================================
 cloudinary.config(
     cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
