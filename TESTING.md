@@ -140,6 +140,8 @@ The application was manually checked in:
 
 Result: core features behaved as expected in tested browsers.
 
+The live deployed version was also checked after Heroku deployment to confirm that the hosted environment matched local expectations for core navigation, authentication, post creation, and media handling.
+
 ## Validation and Linting
 
 ### Python
@@ -166,7 +168,7 @@ No blocking console errors remain in the updated interactions.
 
 | Bug | Status | Notes |
 | --- | --- | --- |
-| Deployment instructions referenced GitHub Pages instead of Railway | Fixed | README updated |
+| Deployment instructions referenced GitHub Pages instead of Heroku | Fixed | README updated to reflect Heroku deployment |
 | Testing evidence missing | Fixed | Added this document and automated tests |
 | Navbar script used wrong selector | Fixed | Updated to `.nav-profile-btn` |
 | Search script used wrong wrapper selector | Fixed | Updated to `.search-box` |

@@ -1,12 +1,12 @@
 
 # Crow – Social Feed Platform
 
-Crow is a database-backed Django social platform where registered users can create posts, upload media, vote on content, comment on discussions, reply to other users, search the feed, and manage their own content. The application demonstrates a complete full-stack workflow using Django, PostgreSQL, JavaScript, HTML, CSS, Git, GitHub, and Railway.
+Crow is a database-backed Django social platform where registered users can create posts, upload media, vote on content, comment on discussions, reply to other users, search the feed, and manage their own content. The application demonstrates a complete full-stack workflow using Django, PostgreSQL, JavaScript, HTML, CSS, Git, GitHub, and Heroku.
 
 ## Live Project
 
-* Live site: [https://web-production-0574.up.railway.app/](https://web-production-0574.up.railway.app/)
-* Repository: [https://github.com/boneyphilip/crow](https://github.com/boneyphilip/crow)
+* Live site: `Add your Heroku app URL here after deployment`
+* Repository: [https://github.com/boneyphilip/crow-v2](https://github.com/boneyphilip/crow-v2)
 
 ## Project Goals
 
@@ -232,7 +232,7 @@ The project applies object-based software concepts through custom Django models:
 
 * SQLite for local development
 * PostgreSQL for deployment
-* Railway for hosting
+* Heroku for hosting
 
 ### Tools and services
 
@@ -259,8 +259,8 @@ Read the full testing evidence in [TESTING.md](TESTING.md).
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/boneyphilip/crow.git
-   cd crow
+   git clone https://github.com/boneyphilip/crow-v2.git
+   cd crow-v2
    ```
 2. Create and activate a virtual environment:
 
@@ -279,11 +279,7 @@ Read the full testing evidence in [TESTING.md](TESTING.md).
    ```bash
    pip install -r requirements.txt
    ```
-4. Create a local environment file:
-
-   * copy `.env.example` to `.env`
-   * add your own secret key and Cloudinary values
-   * leave `DATABASE_URL` blank to use local SQLite during development
+4. Create a local `.env` file and add the required environment variables.
 5. Run migrations:
 
    ```bash
@@ -300,17 +296,58 @@ Read the full testing evidence in [TESTING.md](TESTING.md).
    python manage.py runserver
    ```
 
-### Railway deployment
+### Heroku deployment
 
-1. Push the final project to GitHub.
-2. In Railway, create a new project and deploy from the GitHub repository.
-3. Add a PostgreSQL service to the same Railway project.
-4. In the web service variables, configure the application environment variables.
-5. Set `DATABASE_URL` to the PostgreSQL service connection string.
-6. Add the remaining required variables such as `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `CSRF_TRUSTED_ORIGINS`, and the Cloudinary keys.
-7. Redeploy the service.
-8. Open the deployment logs and confirm that migrations, collectstatic, and Gunicorn start successfully.
-9. Generate a public domain from the Railway service settings.
+This project can be deployed to Heroku as a cloud-hosted Django application.
+
+#### Steps to deploy
+
+1. Create a Heroku account and install the Heroku CLI.
+2. Log in through the CLI:
+
+   ```bash
+   heroku login
+   ```
+
+3. Create a new Heroku app:
+
+   ```bash
+   heroku create your-app-name
+   ```
+
+4. Add a Heroku Postgres database:
+
+   ```bash
+   heroku addons:create heroku-postgresql:essential-0 -a your-app-name
+   ```
+
+5. Set the required config vars in Heroku:
+
+   * `SECRET_KEY`
+   * `DEBUG`
+   * `ALLOWED_HOSTS`
+   * `CSRF_TRUSTED_ORIGINS`
+   * `CLOUDINARY_CLOUD_NAME`
+   * `CLOUDINARY_API_KEY`
+   * `CLOUDINARY_API_SECRET`
+
+6. Ensure the project includes:
+
+   * `requirements.txt`
+   * `Procfile`
+   * `.python-version`
+
+7. Deploy the project:
+
+   ```bash
+   git push heroku main
+   ```
+
+8. Open the deployed app:
+
+   ```bash
+   heroku open
+   ```
 
 ### Required environment variables
 
@@ -323,12 +360,27 @@ Read the full testing evidence in [TESTING.md](TESTING.md).
 * `CLOUDINARY_API_KEY`
 * `CLOUDINARY_API_SECRET`
 
+#### Heroku config vars example
+
+```text
+SECRET_KEY=your-secret-key
+DEBUG=False
+ALLOWED_HOSTS=your-app-name.herokuapp.com
+CSRF_TRUSTED_ORIGINS=https://your-app-name.herokuapp.com
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+```
+
+`DATABASE_URL` will usually be provided automatically by Heroku Postgres.
+
 ### Procfile
 
-The project uses the following web process:
+The project uses the following Heroku process types:
 
 ```Procfile
-web: sh -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn crow.wsgi:application --bind 0.0.0.0:$PORT"
+release: python manage.py migrate --noinput
+web: gunicorn crow.wsgi:application
 ```
 
 ## Repository Structure
@@ -345,7 +397,7 @@ crow/
 ├── manage.py
 ├── Procfile
 ├── requirements.txt
-└── runtime.txt
+└── .python-version
 ```
 
 ## Credits
@@ -363,7 +415,7 @@ crow/
 ### Platforms and services
 
 * GitHub for version control and repository hosting
-* Railway for cloud deployment
+* Heroku for cloud deployment
 * Cloudinary for media storage
 
 ## Acknowledgements
@@ -544,7 +596,7 @@ Result: core features worked consistently in tested browsers.
 
 | Bug                                                                  | Status | Notes                                                         |
 | -------------------------------------------------------------------- | ------ | ------------------------------------------------------------- |
-| README contained incorrect GitHub Pages deployment instructions      | Fixed  | Replaced with Railway deployment and local setup instructions |
+| README contained incorrect GitHub Pages deployment instructions      | Fixed  | Replaced with Heroku deployment and local setup instructions |
 | Testing evidence too vague for assessment                            | Fixed  | Added detailed testing document and automated Django tests    |
 | No clear Agile / planning evidence in repository                     | Fixed  | Added AGILE.md and linked it from README                      |
 | No data schema explanation in README                                 | Fixed  | Added ERD and model descriptions                              |
@@ -889,7 +941,7 @@ This same refinement pattern was used across the main project features.
 * Post management epic maps to post CRUD views, templates, and forms.
 * Social interaction epic maps to comments, replies, and votes.
 * Discovery epic maps to search, profiles, and responsive navigation.
-* Deployment/documentation epic maps to Railway setup, testing evidence, README, and security configuration.
+* Deployment/documentation epic maps to Heroku setup, testing evidence, README, and security configuration.
 
 ## Recommended GitHub Project Evidence for Resubmission
 
