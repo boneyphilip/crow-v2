@@ -184,6 +184,22 @@ Media behaviour still depends on correct Cloudinary configuration in local and d
 
 Automated front-end testing could be expanded further in a future version.
 
+## Deployed Application Testing
+
+The deployed Heroku version was also tested to confirm that it matched the local development version.
+
+The following features were verified on the live site:
+
+- home page loads correctly
+- registration and login work correctly
+- post creation works
+- image uploads work
+- document uploads work
+- comments and replies work
+- editing and deleting user-owned content works
+- search works
+- profile page loads correctly
+
 ## Conclusion
 
 The Crow project now includes stronger testing evidence in line with PP4 requirements. Manual testing, automated testing, JavaScript behaviour checks, and documented bug fixes collectively support the quality and stability of the application for resubmission.
