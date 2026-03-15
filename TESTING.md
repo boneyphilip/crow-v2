@@ -1,6 +1,6 @@
 # Testing
 
-This document records both automated and manual testing for the Crow project. It was expanded after assessor feedback to provide clear evidence of functionality, usability, responsiveness, JavaScript behaviour, and data handling.
+This document records the automated and manual testing completed for the Crow project. It was expanded after assessor feedback to provide clear evidence of functionality, usability, responsiveness, JavaScript behaviour, and data handling.
 
 ## Testing Strategy
 
@@ -21,25 +21,25 @@ Automated Django tests were added to provide baseline regression coverage.
 File: `accounts/tests.py`
 
 Covered areas:
-- registration page loads successfully;
-- user can register with valid data;
-- login page loads successfully.
+- the registration page loads successfully;
+- a user can register with valid data;
+- the login page loads successfully.
 
 ### Posts tests
 
 File: `posts/tests.py`
 
 Covered areas:
-- home page renders;
-- authenticated user can create a post;
-- unauthenticated user is redirected from the protected create route;
-- post author can edit their own post;
-- non-author cannot edit another user's post;
-- post author can delete their own post;
-- authenticated user can add a comment;
+- the home page renders correctly;
+- an authenticated user can create a post;
+- an unauthenticated user is redirected from the protected create route;
+- a post author can edit their own post;
+- a non-author cannot edit another user's post;
+- a post author can delete their own post;
+- an authenticated user can add a comment;
 - users can vote on a post;
 - search returns an expected result;
-- profile page loads for a valid user.
+- the profile page loads for a valid user.
 
 ### Running tests locally
 
@@ -62,9 +62,9 @@ python manage.py test
 | Create post with TXT file | Upload one valid TXT file and submit | Post saved and file displayed as document link/card | Pass |
 | Create post with empty file input | Submit create form with no real file selected in an upload field | Application does not crash | Pass |
 | Edit own post | Log in as author, update post, save | Post updates successfully | Pass |
-| Edit another user's post | Log in as non-owner and open edit URL | Access is blocked | Pass |
+| Edit another user's post | Log in as a non-owner and open the edit URL | Access is blocked | Pass |
 | Delete own post | Log in as author and delete post | Post removed successfully | Pass |
-| Delete another user's post | Log in as non-owner and open delete URL | Access is blocked | Pass |
+| Delete another user's post | Log in as a non-owner and open the delete URL | Access is blocked | Pass |
 | View post detail | Open post detail page | Correct post details load | Pass |
 | Add comment | Submit a comment while logged in | Comment appears on the post | Pass |
 | Reply to comment | Submit a reply to an existing comment | Reply appears under parent comment | Pass |
@@ -133,7 +133,7 @@ Result: the layout remained functional and readable across tested sizes.
 
 ## Browser Testing
 
-The application was manually checked in:
+The application was manually tested in:
 
 - Google Chrome;
 - Microsoft Edge.
@@ -148,7 +148,7 @@ The live deployed version was also checked after Heroku deployment to confirm th
 
 Python files were checked with Flake8 during development.
 
-The code was adjusted to improve line length compliance and readability.
+The code was adjusted where necessary to improve line-length compliance and readability.
 
 ### HTML
 
@@ -180,9 +180,8 @@ No blocking console errors remain in the updated interactions.
 
 ## Known Limitations
 
-Media behaviour still depends on correct Cloudinary configuration in local and deployed environments.
-
-Automated front-end testing could be expanded further in a future version.
+- Media behaviour still depends on correct Cloudinary configuration in local and deployed environments.
+- Automated front-end testing could be expanded further in a future version.
 
 ## Deployed Application Testing
 
@@ -190,16 +189,16 @@ The deployed Heroku version was also tested to confirm that it matched the local
 
 The following features were verified on the live site:
 
-- home page loads correctly
-- registration and login work correctly
-- post creation works
-- image uploads work
-- document uploads work
-- comments and replies work
-- editing and deleting user-owned content works
-- search works
-- profile page loads correctly
+- home page loads correctly;
+- registration and login work correctly;
+- post creation works;
+- image uploads work;
+- document uploads work;
+- comments and replies work;
+- editing and deleting user-owned content works;
+- search works;
+- profile page loads correctly.
 
 ## Conclusion
 
-The Crow project now includes stronger testing evidence in line with PP4 requirements. Manual testing, automated testing, JavaScript behaviour checks, and documented bug fixes collectively support the quality and stability of the application for resubmission.
+The Crow project now includes stronger testing evidence in line with PP4 requirements. Manual testing, automated testing, JavaScript behaviour checks, deployed-application checks, and documented bug fixes collectively support the quality and stability of the application for resubmission.
