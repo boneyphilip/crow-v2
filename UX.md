@@ -1,6 +1,18 @@
 # UX Design Notes
 
-This document expands on the design reasoning behind Crow and supports the README.
+This document expands on the UX and design reasoning behind Crow and complements the README.
+
+## Retrospective UX Documentation
+
+To strengthen the design evidence for the project, retrospective UX artefacts were created based on the final implemented version of the application.
+
+These include:
+- a site map;
+- user-flow diagrams;
+- low-fidelity wireframes for key pages;
+- page-structure documentation based on the final working build.
+
+These artefacts are intended to document the implemented UX clearly and honestly rather than claim that every wireframe was produced before development.
 
 ## Target Audience
 
@@ -17,7 +29,7 @@ The main UX goals were:
 - reduce cognitive load through a familiar feed layout;
 - make primary actions easy to find;
 - provide clear feedback after user actions;
-- support both guest and authenticated users without confusion.
+- support both guest users and authenticated users without confusion.
 
 ## Information Hierarchy
 
@@ -63,7 +75,7 @@ The project was designed with these accessibility considerations in mind:
 - readable contrast between text and background;
 - responsive spacing to avoid cramped layouts;
 - clear button labels and visible interaction states;
-- semantic structure where practical in templates;
+- semantic HTML structure where practical in templates;
 - navigation that remains usable on smaller screens.
 
 ## Responsive Strategy
@@ -79,7 +91,7 @@ The responsive strategy focused on preserving usability rather than simply shrin
 During resubmission fixes, media handling was improved so that:
 - images render as images;
 - videos render as videos;
-- PDFs and text files render as document links/cards rather than broken previews;
+- PDFs and text files are presented as document links or document cards rather than broken previews;
 - create-page feedback appears on the create page and auto-hides.
 
 ## Future UX Improvements
@@ -92,4 +104,4 @@ Possible future UX refinements include:
 
 ## Conclusion
 
-The UX design of Crow intentionally follows familiar community-platform patterns so that users can understand the site quickly. The focus is on clarity, consistency, responsiveness, and confident user interaction.
+The UX design of Crow intentionally follows familiar community-platform patterns so that users can understand the site quickly and interact with it confidently. The overall focus is on clarity, consistency, responsiveness, and user control.

@@ -1,4 +1,4 @@
-# Crow - Social Feed Platform
+# Crow – Social Feed Platform
 
 Crow is a database-backed Django social platform where registered users can create posts, upload media, vote on content, comment on discussions, reply to other users, search the feed, and manage their own content. The application demonstrates a complete full-stack workflow using Django, PostgreSQL, JavaScript, HTML, CSS, Git, GitHub, Cloudinary, and Heroku.
 
@@ -40,11 +40,11 @@ The project serves as a practical example of a centrally managed dataset where:
 
 ### Design principles
 
-1. **Clarity** - a familiar feed layout keeps the learning curve low.
-2. **Consistency** - navigation, buttons, cards, and interaction patterns are repeated throughout the site.
-3. **User control** - users can create, edit, delete, vote, and reply without confusion.
-4. **Feedback** - Django messages and JavaScript interactions confirm actions.
-5. **Responsiveness** - layouts adapt across desktop, tablet, and mobile breakpoints.
+1. **Clarity** – a familiar feed layout keeps the learning curve low.
+2. **Consistency** – navigation, buttons, cards, and interaction patterns are repeated throughout the site.
+3. **User control** – users can create, edit, delete, vote, and reply without confusion.
+4. **Feedback** – Django messages and JavaScript interactions confirm actions.
+5. **Responsiveness** – layouts adapt across desktop, tablet, and mobile breakpoints.
 
 ### Main views
 
@@ -56,6 +56,26 @@ The project serves as a practical example of a centrally managed dataset where:
 * Login page
 * Register page
 * Profile page
+
+### UX Planning Artefacts
+
+To document the design process more clearly, retrospective UX artefacts were created based on the final implemented version of the application.
+
+These artefacts reflect the final structure, user flows, page layouts, and navigation logic of the implemented and deployed application. They are included to provide clear UX planning evidence that maps directly to the implemented application.
+
+#### Site map and user flows
+
+![Site map](crow/docs/ux/ux-sitemap.png)
+![Authentication flow](crow/docs/ux/ux-user-flow-auth.png)
+![Create post flow](crow/docs/ux/ux-user-flow-create-post.png)
+
+#### Low-fidelity page wireframes
+
+![Create post wireframe](crow/docs/ux/ux-wireframe-create-post.png)
+![Home feed wireframe](crow/docs/ux/ux-wireframe-home-desktop.png)
+![Mobile home wireframe](crow/docs/ux/ux-wireframe-home-mobile.png)
+![Post detail wireframe](crow/docs/ux/ux-wireframe-post-detail.png)
+![Profile wireframe](crow/docs/ux/ux-wireframe-profile.png)
 
 ### Responsive mockups
 
@@ -87,7 +107,7 @@ The project uses an Agile planning structure based on epics, user stories, accep
 
 ### Media handling
 
-* Users can attach images, videos, and document-style uploads to posts.
+* Users can attach images, videos, and documents to posts.
 * Single media and gallery layouts are handled separately.
 * Images and videos open in a lightbox; documents open as normal file links.
 
@@ -236,16 +256,24 @@ Read the full testing evidence in [TESTING.md](TESTING.md).
    cd crow-v2
    ```
 
-2. Create and activate a virtual environment:
+2. Create a virtual environment:
 
    ```bash
    python -m venv .venv
    ```
 
+   Activate the virtual environment.
+
    On Windows PowerShell:
 
    ```powershell
    .venv\Scripts\Activate.ps1
+   ```
+
+   On macOS/Linux:
+
+   ```bash
+   source .venv/bin/activate
    ```
 
 3. Install dependencies:
@@ -318,14 +346,13 @@ This application is deployed to Heroku.
 8. Open the deployed application:
 
    ```bash
-   heroku open
+   heroku open -a your-app-name
    ```
 
 #### Current deployed application
 
-App name: `crow-social-feed`
-
-Live URL: `https://crow-social-feed-a61d23c4775f.herokuapp.com/`
+* App name: `crow-social-feed`
+* Live URL: [https://crow-social-feed-a61d23c4775f.herokuapp.com/](https://crow-social-feed-a61d23c4775f.herokuapp.com/)
 
 ### Required environment variables
 
@@ -369,6 +396,8 @@ web: gunicorn crow.wsgi:application
 crow-v2/
 |-- accounts/
 |-- crow/
+|   `-- docs/
+|       `-- ux/
 |-- posts/
 |-- AGILE.md
 |-- TESTING.md
